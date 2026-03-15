@@ -1,5 +1,6 @@
-package com.example.lab1.security;
+package com.example.lab2.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
+    DaoUserDetailsManager userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -24,9 +28,9 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(PasswordEncoder pe) {
         String password = pe.encode("123");
         
-        UserDetails user1 = User.withUsername("user@gmail.com").password(password).roles("USER").build(); // [cite: 35, 36]
-        UserDetails user2 = User.withUsername("admin@gmail.com").password(password).roles("ADMIN").build(); // [cite: 42, 43]
-        UserDetails user3 = User.withUsername("both@gmail.com").password(password).roles("USER", "ADMIN").build(); // [cite: 44]
+        UserDetails user1 = User.withUsername("user@gmail.com").password(password).roles("USER").build(); 
+        UserDetails user2 = User.withUsername("admin@gmail.com").password(password).roles("ADMIN").build(); 
+        UserDetails user3 = User.withUsername("both@gmail.com").password(password).roles("USER", "ADMIN").build();
         
         return new InMemoryUserDetailsManager(user1, user2, user3);
     }
@@ -43,7 +47,7 @@ public class SecurityConfig {
         http.formLogin(config -> { 
             config.loginPage("/login/form"); 
             config.loginProcessingUrl("/login/check"); 
-            config.defaultSuccessUrl("/login/success"); 
+            config.defaultSuccessUrl("/"); 
             config.failureUrl("/login/failure"); 
             config.permitAll(); 
             config.usernameParameter("username"); 
@@ -63,7 +67,7 @@ public class SecurityConfig {
             config.invalidateHttpSession(true); 
             config.deleteCookies("remember-me"); 
         });
-
+        http.userDetailsService(userDetailsService);
         return http.build(); 
     }
 }

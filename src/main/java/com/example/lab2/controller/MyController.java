@@ -1,4 +1,4 @@
-package com.example.lab1.controller;
+package com.example.lab2.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

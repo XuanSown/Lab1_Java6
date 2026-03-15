@@ -1,4 +1,4 @@
-package com.example.lab1.service;
+package com.example.lab2.service;
 
 import java.util.List;
 import java.util.stream.Stream;
